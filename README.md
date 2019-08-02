@@ -21,3 +21,6 @@ token & gist ID. Inconsistent data will raise exceptions:
 
 As this function fetches Github's API, you might want to wait for it being done
 before doing something else, with `await` operator.
+
+Now, getting a file raw content can be achieved easily:
+`dgObj.raw(file_name);`
