@@ -1,12 +1,13 @@
 const GISTS_URL = "https://api.github.com/gists"
 function DataGists(token,id=false) {
-  this.get_token = function(tk) {
-    if (typeof tk !== "undefined") {
-      this.token = tk;
+  this.token = token;
+  this.id = id;
+  this.get_headers = function() {
+    if (typeof this.token !== "undefined") {
       this.headers = {
         "Accept": "application/vnd.github.v3+json",
         "Content-Type": "application/json",
-        "Authorization": "token "+tk
+        "Authorization": "token "+this.token
       }
     } else {
       throw new Error("Authorization token is mandatory !\n\
@@ -19,7 +20,7 @@ function DataGists(token,id=false) {
       method: "POST",
       body: JSON.stringify({"files": {
         "init": {
-          "content": "DataGists Initiated"
+          "content": "DataGist initialized"
           }
         }
       })
@@ -33,29 +34,45 @@ function DataGists(token,id=false) {
       method: "GET"
     });
     if (gist.status == 404) {
-      throw new Error("Gist Not Found, check the provided ID");
+      throw new Error("Gist Not Found, check provided ID");
     } else if (gist.status == 401) {
-      throw new Error("Authorization token looks wrong.");
+      throw new Error("Authorization Failure !");
     }
   };
   this.init = async function() {
     try {
       try {
-        this.get_token(token);
+        this.get_headers();
       } catch(e) {
         throw e;
       }
-      this.id = (id === false) ? await this.create():id;
+      this.id = (this.id === false) ? await this.create():this.id;
       try {
         await this.verify_gist();
       } catch(e) {
         throw e;
       }
+      console.log("DataGist initialized with ID "+this.id);
     }
     catch(e) {
       console.error(e.message);
     }
   }
-  this.init();
+  this.raw = async function(file) {
+    if (typeof file === "undefined") {
+      throw new Error("Usage: DataGists.raw(file_name)");
+    }
+    let gist = await fetch(GISTS_URL+"/"+this.id, {
+      headers: this.headers,
+      method: "GET"
+    });
+    gist = await gist.json();
+    try {
+      gist = gist.files[file].content;
+      return gist;
+    } catch {
+      throw new Error("File not found");
+    }
+  };
 }
 export { DataGists };
