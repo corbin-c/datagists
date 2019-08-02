@@ -74,5 +74,14 @@ function DataGists(token,id=false) {
       throw new Error("File not found");
     }
   };
+  this.putContent = async function(file,content,append=false) {
+    content = (append) ? content+"\n"+(await this.raw(file)):content;
+    let gist = await fetch(GISTS_URL+"/"+this.id, {
+      headers: this.headers,
+      method: "PATCH",
+      body: '{"files":{"'+file+'":{"content":'+JSON.stringify(content)+'}}}'
+    });
+    return true;
+  }
 }
 export { DataGists };
