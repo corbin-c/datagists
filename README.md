@@ -5,7 +5,8 @@ It makes use of [Github's API v3](https://developer.github.com/v3/).
 
 To run DataGists, import it first:
 
-`import { DataGists } from "./gists.js";`
+`import { DataGists } from
+"https://raw.githubusercontent.com/corbin-c/datagists/master/DataGists.js";`
 
 Then you can create a DataGists object, which can be fed two parameters: Auth
 Token (Mandatory, can be obtained at https://github.com/settings/tokens - todo:
