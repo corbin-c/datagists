@@ -76,7 +76,7 @@ function DataGists(token,id=false) {
   };
   this.putContent = async function(file,content,append=false) {
     content = (typeof content !== "string") ? JSON.stringify(content):content;
-    content = (append) ? content+"\n"+(await this.raw(file)):content;
+    content = (append) ? content+"\n"+(await this.getContent(file)):content;
     let gist = await fetch(GISTS_URL+"/"+this.id, {
       headers: this.headers,
       method: "PATCH",
