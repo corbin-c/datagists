@@ -23,4 +23,13 @@ As this function fetches Github's API, you might want to wait for it being done
 before doing something else, with `await` operator.
 
 Now, getting a file raw content can be achieved easily:
-`dgObj.raw(file_name);`
+
+`dgObj.getContent(file_name);`
+
+Similarly, putting content to a file is done as follow:
+
+`dgObj.putContent(file_name,content,[append]);`
+
+The optional `[append]` parameter is a boolean flag. If set to true,
+content will be added to the file instead of overwriting it. **Note: new
+content added to the file is appended at the beggining of the file.**
