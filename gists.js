@@ -75,18 +75,22 @@ function DataGists(token,id=false) {
     }
   };
   this.putContent = async function(file,content,append=false) {
-    if ((typeof file === "undefined") || (typeof content === "undefined")) {
-      throw new Error("Usage: DataGists.putContent(file_name,content\
+    try {
+      if ((typeof file === "undefined") || (typeof content === "undefined")) {
+        throw new Error("Usage: DataGists.putContent(file_name,content\
 ,[append])");
+      }
+      content = (typeof content !== "string")?JSON.stringify(content):content;
+      content = (append)?content+"\n"+(await this.getContent(file)):content;
+      let gist = await fetch(GISTS_URL+"/"+this.id, {
+          headers: this.headers,
+          method: "PATCH",
+          body: '{"files":{"'+file+'":{"content":'+JSON.stringify(content)+'}}}'
+        });
+      return true;
+    } catch (e) {
+      console.error(e.message);
     }
-    content = (typeof content !== "string")?JSON.stringify(content):content;
-    content = (append)?content+"\n"+(await this.getContent(file)):content;
-    let gist = await fetch(GISTS_URL+"/"+this.id, {
-      headers: this.headers,
-      method: "PATCH",
-      body: '{"files":{"'+file+'":{"content":'+JSON.stringify(content)+'}}}'
-    });
-    return true;
   }
 }
 export { DataGists };
