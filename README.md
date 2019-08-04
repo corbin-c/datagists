@@ -30,6 +30,6 @@ Similarly, putting content to a file is done as follow:
 
 `dgObj.putContent(file_name,content,[append]);`
 
-The optional `[append]` parameter is a boolean flag. If set to true,
-content will be added to the file instead of overwriting it. **Note: new
-content added to the file is appended at the beggining of the file.**
+The optional `[append]` parameter is a boolean flag. If set to true, content
+will be added to the file instead of overwriting it. **Note: new content added
+to the file is appended at the beggining of the file.**
