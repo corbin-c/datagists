@@ -58,9 +58,9 @@ function DataGists(token,id=false) {
       console.error(e.message);
     }
   }
-  this.raw = async function(file) {
+  this.getContent = async function(file) {
     if (typeof file === "undefined") {
-      throw new Error("Usage: DataGists.raw(file_name)");
+      throw new Error("Usage: DataGists.getContent(file_name)");
     }
     let gist = await fetch(GISTS_URL+"/"+this.id, {
       headers: this.headers,
