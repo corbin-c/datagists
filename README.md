@@ -42,10 +42,14 @@ let currentGist = await myGists.useGist(gist);
 ```
 
 The above `gist` variable is meant to be an object providing either an ID or a 
-description : 
+description: (ID is prioritary over description)
 
 ```javascript
 gist = {id:id_string,description:gist_description};
+//you also could've done it this way:
+gist = {id:id_string};
+//or maybe this way
+gist = {description:gist_description};
 ```
 
 Now, getting a file raw content can be achieved easily:
