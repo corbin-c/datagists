@@ -1,8 +1,8 @@
-const GISTS_URL = "https://api.github.com/gists"
-function DataGists(token,id=false) {
+const GISTS_URL = "https://api.github.com/gists";
+function DataGists(token) {
   this.token = token;
-  this.id = id;
-  this.get_headers = function() {
+  this.gists = [];
+  this.setHeaders = function() {
     if (typeof this.token !== "undefined") {
       this.headers = {
         "Accept": "application/vnd.github.v3+json",
@@ -14,21 +14,64 @@ function DataGists(token,id=false) {
   Get one here : https://github.com/settings/tokens");
     }
   }
-  this.create = async function() {
-    let gist = await fetch(GISTS_URL, {
+  this.init = function() {
+    try {
+      this.setHeaders();
+    } catch(e) {
+      console.error(e.message);
+    }
+  }
+  this.listGists = async function() {
+    try {
+      let list = await fetch(GISTS_URL, {
+        headers: this.headers,
+        method: "GET"
+      });
+      list = await list.json();
+      list = list.map(e => ({id:e.id,description:e.description}));
+      this.gists = list;
+      return list;
+    } catch(e) {
+      console.error(e.message);
+    }
+  }
+  this.createGist = async function(file_name,content) {
+    let gist = {"files":{}};
+    gist.files[file_name] = {"content":content};
+    gist = await fetch(GISTS_URL, {
       headers: this.headers,
       method: "POST",
-      body: JSON.stringify({"files": {
-        "init": {
-          "content": "DataGist initialized"
-          }
-        }
-      })
+      body: JSON.stringify(gist)
     });
     gist = await gist.json();
     return gist.id;
   };
-  this.verify_gist = async function() {
+  this.useGist = async function(gist) {
+    try {
+      if ((typeof gist === "undefined") ||
+          ((typeof gist.id === "undefined") &&
+          (typeof gist.description === "undefined"))) {
+        throw new Error("Gist couldn't be used. Provide id or description");
+      } else if ((typeof gist.id === "undefined") &&
+                (typeof gist.description !== "undefined")) {
+        if (this.gists.length == 0) {this.listGists();}
+        gist = this.gists.filter((e) => (e.description == gist.description))[0];
+        if (typeof gist === "undefined") {
+          throw new Error("Provided description didn't match any Gist");
+        }
+      }
+      gist = new Gist(gist.id,this.headers);
+      await gist.verifyGist();
+      return gist;
+    } catch (e) {
+      console.error(e.message);
+    }
+  }
+}
+function Gist(id,headers) {
+  this.id = id;
+  this.headers = headers;
+  this.verifyGist = async function() {
     let gist = await fetch(GISTS_URL+"/"+this.id, {
       headers: this.headers,
       method: "GET"
@@ -39,28 +82,9 @@ function DataGists(token,id=false) {
       throw new Error("Authorization Failure !");
     }
   };
-  this.init = async function() {
-    try {
-      try {
-        this.get_headers();
-      } catch(e) {
-        throw e;
-      }
-      this.id = (this.id === false) ? await this.create():this.id;
-      try {
-        await this.verify_gist();
-      } catch(e) {
-        throw e;
-      }
-      console.log("DataGist initialized with ID "+this.id);
-    }
-    catch(e) {
-      console.error(e.message);
-    }
-  }
   this.getContent = async function(file) {
     if (typeof file === "undefined") {
-      throw new Error("Usage: DataGists.getContent(file_name)");
+      throw new Error("Usage: Gist.getContent(file_name)");
     }
     let gist = await fetch(GISTS_URL+"/"+this.id, {
       headers: this.headers,
@@ -77,15 +101,15 @@ function DataGists(token,id=false) {
   this.putContent = async function(file,content,append=false) {
     try {
       if ((typeof file === "undefined") || (typeof content === "undefined")) {
-        throw new Error("Usage: DataGists.putContent(file_name,content\
-,[append])");
+        throw new Error("Usage: Gist.putContent(file_name,content,[append])");
       }
-      content = (typeof content !== "string")?JSON.stringify(content):content;
       content = (append)?content+"\n"+(await this.getContent(file)):content;
-      let gist = await fetch(GISTS_URL+"/"+this.id, {
+      let gist = {"files":{}};
+      gist.files[file] = {"content":content};
+      gist = await fetch(GISTS_URL+"/"+this.id, {
           headers: this.headers,
           method: "PATCH",
-          body: '{"files":{"'+file+'":{"content":'+JSON.stringify(content)+'}}}'
+          body: gist
         });
       return true;
     } catch (e) {

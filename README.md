@@ -9,30 +9,52 @@ DataGists is a JS module for data storage & retrieval on
 
 To run DataGists, import it first:
 
-`import { DataGists } from "https://corbin-c.github.io/datagists/DataGists.js";`
+```javascript
+import { DataGists } from "https://corbin-c.github.io/datagists/DataGists.js";
+```
 
-Then you can create a DataGists object, which can be fed two parameters: Auth
-Token (Mandatory, can be obtained at https://github.com/settings/tokens - todo:
-OAuth should be used instead). Second parameter is the Id of the Gist you want
-to use. This is optional, not providing it will create a new private gist.
+Then you can create a DataGists object, which must be fed with an Auth Token
+(Mandatory, can be obtained at https://github.com/settings/tokens - todo: OAuth
+should be used instead).
 
-`let dgObj = new DataGists(auth_token,[gists_id]);`
+```javascript
+let myGists = new DataGists(auth_token);
+```
 
-Once created, DataGists object has to be initialized, this will check the auth
-token & gist ID. Inconsistent data will raise exceptions:
+As this module fetches Github's API, you might want to wait for it being done
+before doing something else, with `await` operator. Once created, DataGists
+object has to be initialized, this will check the auth token:
 
-`dgObj.init();`
+```javascript
+await myGists.init();
+```
 
-As this function fetches Github's API, you might want to wait for it being done
-before doing something else, with `await` operator.
+If you don't know which Gists are available, you can simply call:
+
+```javascript
+myGists.listGists();
+```
+
+Once your target Gist is identified, you can start working with it:
+
+```javascript
+let currentGist = await myGists.useGist(gist);
+```
+
+The above `gist` variable is meant to be an object providing either an ID or a 
+description : `gist = {id:id_string,description:gist_description};`
 
 Now, getting a file raw content can be achieved easily:
 
-`dgObj.getContent(file_name);`
+```javascript
+currentGist.getContent(file_name);
+```
 
 Similarly, putting content to a file is done as follow:
 
-`dgObj.putContent(file_name,content,[append]);`
+```javascript
+currentGist.putContent(file_name,content,[append]);
+```
 
 The optional `[append]` parameter is a boolean flag. If set to true, content
 will be added to the file instead of overwriting it. **Note: new content added
