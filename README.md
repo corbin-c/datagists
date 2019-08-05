@@ -42,7 +42,11 @@ let currentGist = await myGists.useGist(gist);
 ```
 
 The above `gist` variable is meant to be an object providing either an ID or a 
-description : `gist = {id:id_string,description:gist_description};`
+description : 
+
+```javascript
+gist = {id:id_string,description:gist_description};
+```
 
 Now, getting a file raw content can be achieved easily:
 
@@ -53,12 +57,11 @@ currentGist.getContent(file_name);
 Similarly, putting content to a file is done as follow:
 
 ```javascript
-currentGist.putContent(file_name,content,[append]);
+currentGist.putContent(file_name,content,[prepend]);
 ```
 
-The optional `[append]` parameter is a boolean flag. If set to true, content
-will be added to the file instead of overwriting it. **Note: new content added
-to the file is appended at the beggining of the file.**
+The optional `[prepend]` parameter is a boolean flag. If set to true, content
+will be added at the beginning the file instead of overwriting it.
 
 In case you want to create a Gist instead of using an existing one, you can do:
 

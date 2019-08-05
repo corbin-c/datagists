@@ -104,15 +104,15 @@ function Gist(id,headers) {
       throw new Error("File not found");
     }
   };
-  this.putContent = async function(file,content,append=false) {
+  this.putContent = async function(file,content,prepend=false) {
     try {
       if ((typeof file === "undefined") || (typeof content === "undefined")) {
-        throw new Error("Usage: Gist.putContent(file_name,content,[append])");
+        throw new Error("Usage: Gist.putContent(file_name,content,[prepend])");
       }
       try {
-        content = (append)?content+"\n"+(await this.getContent(file)):content;
+        content = (prepend)?content+"\n"+(await this.getContent(file)):content;
       } catch {
-        console.warn("Content couldn't be appended.");
+        console.warn("Content couldn't be prepended.");
       }
       let gist = {"files":{}};
       gist.files[file] = {"content":content};
