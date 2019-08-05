@@ -59,3 +59,12 @@ currentGist.putContent(file_name,content,[append]);
 The optional `[append]` parameter is a boolean flag. If set to true, content
 will be added to the file instead of overwriting it. **Note: new content added
 to the file is appended at the beggining of the file.**
+
+In case you want to create a Gist instead of using an existing one, you can do:
+
+```javascript
+myGists.createGist(file_name,content,[description],[is_public]);
+```
+
+This function returns the created Gist ID so you can later use it with
+useGist();
