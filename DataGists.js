@@ -109,7 +109,7 @@ function Gist(id,headers) {
       gist = await fetch(GISTS_URL+"/"+this.id, {
           headers: this.headers,
           method: "PATCH",
-          body: gist
+          body: JSON.stringify(gist)
         });
       return true;
     } catch (e) {
