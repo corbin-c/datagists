@@ -35,9 +35,15 @@ function DataGists(token) {
       console.error(e.message);
     }
   }
-  this.createGist = async function(file_name,content) {
+  this.createGist = async function(file_name,content,description,is_public) {
     let gist = {"files":{}};
     gist.files[file_name] = {"content":content};
+    if ((typeof description !== "undefined") && (description != "")) {
+      gist.description = description;
+    }
+    if (typeof is_public !== "undefined") {
+      gist.public = is_public;
+    }
     gist = await fetch(GISTS_URL, {
       headers: this.headers,
       method: "POST",
@@ -54,7 +60,7 @@ function DataGists(token) {
         throw new Error("Gist couldn't be used. Provide id or description");
       } else if ((typeof gist.id === "undefined") &&
                 (typeof gist.description !== "undefined")) {
-        if (this.gists.length == 0) {this.listGists();}
+        if (this.gists.length == 0) {await this.listGists();}
         gist = this.gists.filter((e) => (e.description == gist.description))[0];
         if (typeof gist === "undefined") {
           throw new Error("Provided description didn't match any Gist");
@@ -103,7 +109,11 @@ function Gist(id,headers) {
       if ((typeof file === "undefined") || (typeof content === "undefined")) {
         throw new Error("Usage: Gist.putContent(file_name,content,[append])");
       }
-      content = (append)?content+"\n"+(await this.getContent(file)):content;
+      try {
+        content = (append)?content+"\n"+(await this.getContent(file)):content;
+      } catch {
+        console.warn("Content couldn't be appended.");
+      }
       let gist = {"files":{}};
       gist.files[file] = {"content":content};
       gist = await fetch(GISTS_URL+"/"+this.id, {
