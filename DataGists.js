@@ -1,8 +1,10 @@
 const GISTS_URL = "https://api.github.com/gists";
-function DataGists(token) {
-  this.token = token;
-  this.gists = [];
-  this.setHeaders = function() {
+let DataGists = class {
+  constructor(token) {
+    this.token = token;
+    this.gists = [];
+  }
+  setHeaders() {
     if (typeof this.token !== "undefined") {
       this.headers = {
         "Accept": "application/vnd.github.v3+json",
@@ -14,14 +16,14 @@ function DataGists(token) {
   Get one here : https://github.com/settings/tokens");
     }
   }
-  this.init = function() {
+  init() {
     try {
       this.setHeaders();
     } catch(e) {
       console.error(e.message);
     }
   }
-  this.listGists = async function() {
+  async listGists() {
     try {
       let list = await fetch(GISTS_URL, {
         headers: this.headers,
@@ -35,7 +37,7 @@ function DataGists(token) {
       console.error(e.message);
     }
   }
-  this.createGist = async function(file_name,content,description,is_public) {
+  async createGist(file_name,content,description,is_public) {
     let gist = {"files":{}};
     gist.files[file_name] = {"content":content};
     if ((typeof description !== "undefined") && (description != "")) {
@@ -52,7 +54,7 @@ function DataGists(token) {
     gist = await gist.json();
     return gist.id;
   };
-  this.useGist = async function(gist) {
+  async useGist(gist) {
     try {
       if ((typeof gist === "undefined") ||
           ((typeof gist.id === "undefined") &&
@@ -74,10 +76,12 @@ function DataGists(token) {
     }
   }
 }
-function Gist(id,headers) {
-  this.id = id;
-  this.headers = headers;
-  this.verifyGist = async function() {
+let Gist = class {
+  constructor(id,headers) {
+    this.id = id;
+    this.headers = headers;
+  }
+  async verifyGist() {
     let gist = await fetch(GISTS_URL+"/"+this.id, {
       headers: this.headers,
       method: "GET"
@@ -88,7 +92,7 @@ function Gist(id,headers) {
       throw new Error("Authorization Failure !");
     }
   };
-  this.getContent = async function(file) {
+  async getContent(file) {
     if (typeof file === "undefined") {
       throw new Error("Usage: Gist.getContent(file_name)");
     }
@@ -104,7 +108,7 @@ function Gist(id,headers) {
       throw new Error("File not found");
     }
   };
-  this.putContent = async function(file,content,prepend=false) {
+  async putContent(file,content,prepend=false) {
     try {
       if ((typeof file === "undefined") || (typeof content === "undefined")) {
         throw new Error("Usage: Gist.putContent(file_name,content,[prepend])");
