@@ -53,7 +53,7 @@ let DataGists = class {
     });
     gist = await gist.json();
     return gist.id;
-  };
+  }
   async useGist(gist) {
     try {
       if ((typeof gist === "undefined") ||
@@ -91,7 +91,7 @@ let Gist = class {
     } else if (gist.status == 401) {
       throw new Error("Authorization Failure !");
     }
-  };
+  }
   async getContent(file) {
     if (typeof file === "undefined") {
       throw new Error("Usage: Gist.getContent(file_name)");
@@ -107,7 +107,7 @@ let Gist = class {
     } catch {
       throw new Error("File not found");
     }
-  };
+  }
   async putContent(file,content,prepend=false) {
     try {
       if ((typeof file === "undefined") || (typeof content === "undefined")) {
