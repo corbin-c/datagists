@@ -13,9 +13,8 @@ To run DataGists, import it first:
 import { DataGists } from "https://corbin-c.github.io/datagists/DataGists.js";
 ```
 
-Then you can create a DataGists object, which must be fed with an Auth Token
-(Mandatory, can be obtained at https://github.com/settings/tokens - todo: OAuth
-should be used instead).
+Once imported, a DataGists object can be created from an Auth Token, obtained
+from https://github.com/settings/tokens or through OAuth.
 
 ```javascript
 let myGists = new DataGists(auth_token);
