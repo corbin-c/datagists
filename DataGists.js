@@ -1,4 +1,6 @@
 const GISTS_URL = "https://api.github.com/gists";
+const fetch = (typeof window === "undefined")?require("node-fetch"):window.fetch;
+
 let DataGists = class {
   constructor(token) {
     this.token = token;
@@ -20,7 +22,7 @@ let DataGists = class {
     try {
       this.setHeaders();
     } catch(e) {
-      console.error(e.message);
+      console.error("error while setting headers",e.message);
     }
   }
   async listGists() {
