@@ -1,0 +1,17 @@
+{
+  "name": "@corbin-c/datagists",
+  "version": "1.0.1",
+  "description":"",
+  "main":"main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/corbin-c/datagists.git"
+  },
+  "author": "corbin-c",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/corbin-c/datagists/issues"
+  },
+  "homepage": "https://github.com/corbin-c/datagists#readme",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+}
