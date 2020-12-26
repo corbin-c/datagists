@@ -4,4 +4,4 @@ ESrequire = (path) => {
   path = path.replace("\nexport {","\nmodule.exports = {");
   return eval(path);
 }
-module.exports = ESrequire("./DataGists.js").DataGists;
+module.exports = ESrequire(__dirname+"/DataGists.js").DataGists;
