@@ -1,5 +1,4 @@
 const GISTS_URL = "https://api.github.com/gists";
-const fetch = (typeof window === "undefined")?require("node-fetch"):window.fetch;
 
 let DataGists = class {
   constructor(token) {
