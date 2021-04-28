@@ -70,7 +70,7 @@ let DataGists = class {
         }
       }
       gist = new Gist(gist.id,this.headers);
-      gist = await gist.verifyGist();
+      gist.files = (await gist.verifyGist()).files;
       return gist;
     } catch (e) {
       console.error(e.message);
