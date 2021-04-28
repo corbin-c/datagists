@@ -70,7 +70,7 @@ let DataGists = class {
         }
       }
       gist = new Gist(gist.id,this.headers);
-      await gist.verifyGist();
+      gist = await gist.verifyGist();
       return gist;
     } catch (e) {
       console.error(e.message);
@@ -92,6 +92,8 @@ let Gist = class {
     } else if (gist.status == 401) {
       throw new Error("Authorization Failure !");
     }
+    gist = await gist.json();
+    return gist;
   }
   async getContent(file) {
     if (typeof file === "undefined") {
